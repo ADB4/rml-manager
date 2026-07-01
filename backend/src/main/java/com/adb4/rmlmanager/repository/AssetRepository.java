@@ -24,8 +24,8 @@ public interface AssetRepository extends JpaRepository<Asset, UUID> {
     Page<Asset> findByStatus(AssetStatus status, Pageable pageable);
     Page<Asset> findByTitleContainingIgnoreCase(String query, Pageable pageable);
 
-    @Query("""
-    SELECT a FROM Asset a JOIN FETCH a.subcategory s JOIN FETCH s.category
+    @Query(countQuery = """
+    SELECT COUNT(a) FROM Asset a
     WHERE a.status = 'PUBLISHED'
        OR a.createdBy = :userId
        OR EXISTS (SELECT 1 FROM AssetPermission p

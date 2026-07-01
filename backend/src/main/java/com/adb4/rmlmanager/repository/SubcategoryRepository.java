@@ -8,6 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SubcategoryRepository extends JpaRepository<Subcategory, UUID> {
-    Optional<List<Subcategory>> findByCategoryIdOrderByName(UUID categoryId);
+    List<Subcategory> findByCategoryIdOrderByName(UUID categoryId);
     boolean existsByCategoryId(UUID categoryId);
 }
