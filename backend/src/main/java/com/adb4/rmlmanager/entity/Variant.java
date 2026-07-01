@@ -36,7 +36,9 @@ public class Variant extends Auditable {
     @Column(name = "description", length = 1024)
     private String description;
 
-    @Column(name = "color_hex", length = 7)
+    // 6 characters accommodates only RGB, no RGBA
+    // and drops the leading #
+    @Column(name = "color_hex", length = 6)
     private String colorHex;
 
     @Column(name = "sort_order")
