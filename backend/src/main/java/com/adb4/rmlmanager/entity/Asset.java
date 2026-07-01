@@ -44,6 +44,7 @@ public class Asset extends Auditable {
     private boolean hasAnimation;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private AssetStatus status;
 
     @Column(name = "version")

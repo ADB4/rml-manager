@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "subcategories", uniqueConstraints = {
         @UniqueConstraint(name = "uk_subcategory_category_name",  columnNames = {"category_id", "name"})
 })
-public class Subcategory {
+public class Subcategory extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", columnDefinition = "uuid", nullable = false, updatable = false)
@@ -24,6 +24,6 @@ public class Subcategory {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 64)
     private String name;
 }

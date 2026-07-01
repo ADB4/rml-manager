@@ -43,7 +43,6 @@ ENUM TextureMapType {
   METALLIC
   AO
   DISPLACEMENT
-  HEIGHT
   EMISSIVE
   OPACITY
 }
@@ -61,15 +60,36 @@ TABLE app_users {
   }
 }
 
+TABLE categories {
+  id UUID [primary key]
+  name VARCHAR(64) [NOT NULL]
+  created_at TIMESTAMP [NOT NULL]
+  updated_at TIMESTAMP
+
+  indexes {
+    name [unique, name: 'uk_category_name']
+  }
+}
+
+TABLE subcategories {
+  id UUID [primary key]
+  category_id UUID [NOT NULL]
+  name VARCHAR [NOT NULL]
+
+  indexes {
+    (category_id, name) [unique, name: 'uk_subcategory_category_name']
+  }
+}
+
+Ref fk_subcategory_category: subcategories.category_id > categories.id
+
 TABLE assets {
   id UUID [primary key]
   code VARCHAR(32) [NOT NULL]
+  preview VARCHAR
   title VARCHAR [NOT NULL]
-  category VARCHAR [NOT NULL]
-  subcategory VARCHAR [NOT NULL]
+  subcategory_id UUID [NOT NULL]
   description VARCHAR
-  shader VARCHAR
-  material VARCHAR
   has_animation BOOLEAN
   status AssetStatus
   version INTEGER
@@ -82,6 +102,7 @@ TABLE assets {
   }
 }
 
+Ref fk_asset_subcategory: assets.subcategory_id > subcategories.id
 Ref fk_asset_created_by_user: assets.created_by > app_users.id
 
 TABLE asset_permissions {
@@ -119,6 +140,8 @@ TABLE mesh_parts {
   id UUID [primary key]
   asset_id UUID [NOT NULL]
   code VARCHAR(64) [NOT NULL]
+  shader VARCHAR
+  material VARCHAR
   created_at TIMESTAMP [NOT NULL]
   updated_at TIMESTAMP
 
@@ -129,10 +152,12 @@ TABLE mesh_parts {
 
 Ref fk_mesh_part_asset: mesh_parts.asset_id > assets.id
 
+// mesh_part_id is nullable: NULL indicates whole-asset merged
+// geometry for baked LOD levels
 TABLE geometries {
   id UUID [primary key]
   lod_id UUID [NOT NULL]
-  mesh_part_id UUID [NOT NULL]
+  mesh_part_id UUID
   file_name VARCHAR(128) [NOT NULL]
   file_type GeometryFileType [NOT NULL]
   s3_key VARCHAR(128) [NOT NULL]
@@ -176,10 +201,15 @@ TABLE variants {
 
 Ref fk_variant_asset: variants.asset_id > assets.id
 
+// lod_id NULL: texture set shared across all LOD levels (standard case)
+// lod_id set: texture set baked for that specific LOD level
+// mesh_part_id NULL: covers whole-asset merged geometry (baked case)
+// s3_key/s3_bucket optional: location of a zip archive of the texture maps
 TABLE texture_sets {
   id UUID [primary key]
   variant_id UUID [NOT NULL]
-  mesh_part_id UUID [NOT NULL]
+  lod_id UUID
+  mesh_part_id UUID
   s3_key VARCHAR
   s3_bucket VARCHAR
   version INTEGER
@@ -190,6 +220,7 @@ TABLE texture_sets {
 }
 
 Ref fk_texture_set_variant: texture_sets.variant_id > variants.id
+Ref fk_texture_set_lod: texture_sets.lod_id > lods.id
 Ref fk_texture_set_mesh_part: texture_sets.mesh_part_id > mesh_parts.id
 
 TABLE texture_set_maps {
@@ -206,17 +237,18 @@ Ref fk_texture_set_map_map: texture_set_maps.texture_map_id > texture_maps.id
 
 TABLE texture_maps {
   id UUID [primary key]
-  type TextureMapType
-  file_name VARCHAR
+  type TextureMapType [NOT NULL]
+  file_name VARCHAR [NOT NULL]
+  file_type TextureFileType [NOT NULL]
   s3_key VARCHAR
   s3_bucket VARCHAR
   file_size INTEGER
   width INTEGER
   height INTEGER
+  checksum VARCHAR
   uploaded_by UUID [NOT NULL]
   created_at TIMESTAMP [NOT NULL]
   updated_at TIMESTAMP
 }
 
 Ref fk_texture_map_uploaded_by_user: texture_maps.uploaded_by > app_users.id
-

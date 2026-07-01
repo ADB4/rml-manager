@@ -29,5 +29,6 @@ public class AppUser extends Auditable {
     private String password;
 
     @Column(name = "role", nullable = false, length = 32)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 }

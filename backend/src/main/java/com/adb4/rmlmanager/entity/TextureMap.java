@@ -31,12 +31,14 @@ public class TextureMap extends Auditable {
     private Set<TextureSet> textureSets = new HashSet<>();
 
     @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private TextureMapType type;
 
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
     @Column(name = "file_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private TextureFileType fileType;
 
     @Column(name = "s3_key")

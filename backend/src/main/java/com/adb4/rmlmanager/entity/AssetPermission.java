@@ -33,6 +33,7 @@ public class AssetPermission {
     private UUID assetId;
 
     @Column(name = "level", nullable = false)
+    @Enumerated(EnumType.STRING)
     private PermissionLevel level;
 
     @CreatedBy

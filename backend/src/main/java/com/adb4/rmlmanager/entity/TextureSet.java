@@ -27,7 +27,7 @@ public class TextureSet extends Auditable {
     @JoinColumn(name = "variant_id", nullable = false)
     private Variant variant;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lod_id")
     private Lod lod;
 
