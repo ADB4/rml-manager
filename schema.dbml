@@ -1,0 +1,222 @@
+// RML Manager Database Schema
+// Docs: https://dbml.dbdiagram.io/docs
+
+ENUM UserRole {
+  ADMIN
+  USER
+}
+
+ENUM PermissionLevel {
+  VIEWER
+  EDITOR
+}
+
+ENUM AssetStatus {
+  DRAFT
+  PUBLISHED
+}
+
+ENUM GeometryFileType {
+  FBX
+  GLB
+  GLTF
+  OBJ
+  BLEND
+}
+
+ENUM TextureFileType {
+  JPG
+  JPEG
+  GIF
+  PNG
+  SVG
+  WEBP
+  AVIF
+  TIFF
+  TIF
+}
+
+ENUM TextureMapType {
+  ALBEDO
+  NORMAL
+  ROUGHNESS
+  METALLIC
+  AO
+  DISPLACEMENT
+  HEIGHT
+  EMISSIVE
+  OPACITY
+}
+
+TABLE app_users {
+  id UUID [primary key]
+  username VARCHAR(32) [NOT NULL]
+  password VARCHAR(255) [NOT NULL]
+  role UserRole [NOT NULL]
+  created_at TIMESTAMP [NOT NULL]
+  updated_at TIMESTAMP
+
+  indexes {
+    username [unique]
+  }
+}
+
+TABLE assets {
+  id UUID [primary key]
+  code VARCHAR(32) [NOT NULL]
+  title VARCHAR [NOT NULL]
+  category VARCHAR [NOT NULL]
+  subcategory VARCHAR [NOT NULL]
+  description VARCHAR
+  shader VARCHAR
+  material VARCHAR
+  has_animation BOOLEAN
+  status AssetStatus
+  version INTEGER
+  created_by UUID [NOT NULL]
+  created_at TIMESTAMP [NOT NULL]
+  updated_at TIMESTAMP
+
+  indexes {
+    code [unique]
+  }
+}
+
+Ref fk_asset_created_by_user: assets.created_by > app_users.id
+
+TABLE asset_permissions {
+  id UUID [primary key]
+  app_user_id UUID [NOT NULL]
+  asset_id UUID [NOT NULL]
+  level PermissionLevel [NOT NULL]
+  granted_by UUID [NOT NULL]
+  created_at TIMESTAMP [NOT NULL]
+
+  indexes {
+    (app_user_id, asset_id) [unique, name: 'uk_asset_permission_user_asset']
+  }
+}
+
+Ref fk_asset_permission_user: asset_permissions.app_user_id > app_users.id
+Ref fk_asset_permission_asset: asset_permissions.asset_id > assets.id
+Ref fk_asset_permission_granted_by_user: asset_permissions.granted_by > app_users.id
+
+TABLE lods {
+  id UUID [primary key]
+  asset_id UUID [NOT NULL]
+  level INTEGER [NOT NULL]
+  created_at TIMESTAMP [NOT NULL]
+  updated_at TIMESTAMP
+
+  indexes {
+    (asset_id, level) [unique, name: 'uk_lod_asset_level']
+  }
+}
+
+Ref fk_lod_asset: lods.asset_id > assets.id
+
+TABLE mesh_parts {
+  id UUID [primary key]
+  asset_id UUID [NOT NULL]
+  code VARCHAR(64) [NOT NULL]
+  created_at TIMESTAMP [NOT NULL]
+  updated_at TIMESTAMP
+
+  indexes {
+    (asset_id, code) [unique, name: 'uk_mesh_parts_asset_code']
+  }
+}
+
+Ref fk_mesh_part_asset: mesh_parts.asset_id > assets.id
+
+TABLE geometries {
+  id UUID [primary key]
+  lod_id UUID [NOT NULL]
+  mesh_part_id UUID [NOT NULL]
+  file_name VARCHAR(128) [NOT NULL]
+  file_type GeometryFileType [NOT NULL]
+  s3_key VARCHAR(128) [NOT NULL]
+  s3_bucket VARCHAR(128) [NOT NULL]
+  file_size BIGINT [NOT NULL]
+  content_type VARCHAR
+  vertex_count INTEGER
+  polygon_count INTEGER
+  triangle_count INTEGER
+  has_materials BOOLEAN
+  has_textures BOOLEAN
+  has_animation BOOLEAN
+  version INTEGER
+  is_latest BOOLEAN
+  checksum VARCHAR
+  uploaded_by UUID [NOT NULL]
+  created_at TIMESTAMP [NOT NULL]
+  updated_at TIMESTAMP
+}
+
+Ref fk_geometry_lod: geometries.lod_id > lods.id
+Ref fk_geometry_mesh_part: geometries.mesh_part_id > mesh_parts.id
+Ref fk_geometry_uploaded_by_user: geometries.uploaded_by > app_users.id
+
+TABLE variants {
+  id UUID [primary key]
+  asset_id UUID [NOT NULL]
+  code VARCHAR(32) [NOT NULL]
+  display_name VARCHAR [NOT NULL]
+  description VARCHAR(1024)
+  color_hex VARCHAR(6)
+  sort_order INTEGER
+  is_default BOOLEAN
+  created_at TIMESTAMP [NOT NULL]
+  updated_at TIMESTAMP
+
+  indexes {
+    (asset_id, code) [unique, name: 'uk_variant_asset_code']
+  }
+}
+
+Ref fk_variant_asset: variants.asset_id > assets.id
+
+TABLE texture_sets {
+  id UUID [primary key]
+  variant_id UUID [NOT NULL]
+  mesh_part_id UUID [NOT NULL]
+  s3_key VARCHAR
+  s3_bucket VARCHAR
+  version INTEGER
+  is_latest BOOLEAN
+  checksum VARCHAR
+  created_at TIMESTAMP [NOT NULL]
+  updated_at TIMESTAMP
+}
+
+Ref fk_texture_set_variant: texture_sets.variant_id > variants.id
+Ref fk_texture_set_mesh_part: texture_sets.mesh_part_id > mesh_parts.id
+
+TABLE texture_set_maps {
+  texture_set_id UUID [NOT NULL]
+  texture_map_id UUID [NOT NULL]
+
+  indexes {
+    (texture_set_id, texture_map_id) [pk, name: 'pk_texture_set_maps']
+  }
+}
+
+Ref fk_texture_set_map_set: texture_set_maps.texture_set_id > texture_sets.id
+Ref fk_texture_set_map_map: texture_set_maps.texture_map_id > texture_maps.id
+
+TABLE texture_maps {
+  id UUID [primary key]
+  type TextureMapType
+  file_name VARCHAR
+  s3_key VARCHAR
+  s3_bucket VARCHAR
+  file_size INTEGER
+  width INTEGER
+  height INTEGER
+  uploaded_by UUID [NOT NULL]
+  created_at TIMESTAMP [NOT NULL]
+  updated_at TIMESTAMP
+}
+
+Ref fk_texture_map_uploaded_by_user: texture_maps.uploaded_by > app_users.id
+
