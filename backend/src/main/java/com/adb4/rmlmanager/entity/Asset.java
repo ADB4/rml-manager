@@ -19,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "assets")
-public class Asset {
+public class Asset extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", columnDefinition = "uuid", nullable = false, updatable = false)
@@ -58,12 +58,4 @@ public class Asset {
     @CreatedBy
     @Column(name = "created_by", nullable = false, updatable = false)
     private UUID createdBy;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }

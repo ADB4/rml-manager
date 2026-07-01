@@ -19,7 +19,7 @@ import java.util.UUID;
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "geometries")
-public class Geometry {
+public class Geometry extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", columnDefinition = "uuid",  nullable = false, updatable = false)
@@ -81,12 +81,4 @@ public class Geometry {
     @CreatedBy
     @Column(name = "uploaded_by", nullable = false)
     private UUID uploadedBy;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }

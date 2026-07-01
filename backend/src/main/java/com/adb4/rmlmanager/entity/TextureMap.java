@@ -3,6 +3,7 @@ package com.adb4.rmlmanager.entity;
 import com.adb4.rmlmanager.enums.TextureMapType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -18,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Table(name = "texture_maps")
-public class TextureMap {
+public class TextureMap extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", columnDefinition = "uuid", nullable = false, updatable = false)
@@ -49,11 +50,7 @@ public class TextureMap {
     @Column(name = "height")
     private Integer height;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @CreatedBy
+    @Column(name = "uploaded_by", nullable = false)
+    private UUID uploadedBy;
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "asset_permissions")
-public class AssetPermission {
+public class AssetPermission extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, columnDefinition = "uuid")
@@ -36,8 +36,4 @@ public class AssetPermission {
     @CreatedBy
     @Column(name = "granted_by", nullable = false)
     private UUID grantedBy;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
 }

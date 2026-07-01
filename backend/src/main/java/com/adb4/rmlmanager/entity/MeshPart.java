@@ -2,7 +2,10 @@ package com.adb4.rmlmanager.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +17,7 @@ import java.util.UUID;
 @Table(name = "mesh_parts", uniqueConstraints = {
         @UniqueConstraint(name = "uk_mesh_parts_asset_code", columnNames = {"asset_id", "code"})
 })
-public class MeshPart {
+public class MeshPart extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", columnDefinition = "uuid", nullable = false, updatable = false)

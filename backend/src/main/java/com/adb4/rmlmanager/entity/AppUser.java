@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Table(name = "app_users")
-public class AppUser {
+public class AppUser extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "uuid", name = "id",  updatable = false, nullable = false)
@@ -30,12 +30,4 @@ public class AppUser {
 
     @Column(name = "role", nullable = false, length = 32)
     private UserRole role;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }

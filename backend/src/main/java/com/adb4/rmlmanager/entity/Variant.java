@@ -17,7 +17,7 @@ import java.util.UUID;
 @Table(name = "variants", uniqueConstraints = {
         @UniqueConstraint(name = "uk_variant_asset_code", columnNames = {"asset_id", "code"})
 })
-public class Variant {
+public class Variant extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", columnDefinition = "uuid",  nullable = false, updatable = false)
@@ -44,12 +44,4 @@ public class Variant {
 
     @Column(name = "is_default")
     private Boolean isDefault;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }
