@@ -7,5 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface TextureMapRepository extends JpaRepository<TextureMap, UUID> {
-    Optional<TextureMap> findByUuid(UUID uuid);
+    Optional<TextureMap> findByChecksum(String checksum);
 }
