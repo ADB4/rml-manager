@@ -1,6 +1,5 @@
 package com.adb4.rmlmanager.entity;
 
-import com.adb4.rmlmanager.enums.TextureMapType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,27 +11,25 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "texture_maps")
+@Builder
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class TextureMap {
+@NoArgsConstructor
+public class TextureSet {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", columnDefinition = "uuid", nullable = false, updatable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @ManyToMany(mappedBy = "textureMaps", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "texture_set_maps",
+            joinColumns = @JoinColumn(name = "texture_set_id"),
+            inverseJoinColumns = @JoinColumn(name = "texture_map_id")
+    )
     @Builder.Default
-    private Set<TextureSet> textureSets = new HashSet<>();
-
-    @Column(name = "type")
-    private TextureMapType type;
-
-    @Column(name = "file_name")
-    private String fileName;
+    private Set<TextureMap> textureMaps = new HashSet<>();
 
     @Column(name = "s3_key")
     private String s3Key;
@@ -40,14 +37,14 @@ public class TextureMap {
     @Column(name = "s3_bucket")
     private String s3Bucket;
 
-    @Column(name = "file_size")
-    private Integer fileSize;
+    @Column(name = "version")
+    private Integer version;
 
-    @Column(name = "width")
-    private Integer width;
+    @Column(name = "is_latest")
+    private Boolean isLatest;
 
-    @Column(name = "height")
-    private Integer height;
+    @Column(name = "checksum")
+    private String checksum;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -56,4 +53,5 @@ public class TextureMap {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
 }
