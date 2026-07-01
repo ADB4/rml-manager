@@ -27,6 +27,6 @@ public class MeshPart extends Auditable {
     @JoinColumn(name = "asset_id", nullable = false)
     private Asset asset;
 
-    @Column(name = "code", nullable = false)
+    @Column(name = "code", nullable = false, length = 64)
     private String code;
 }

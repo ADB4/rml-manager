@@ -36,7 +36,7 @@ public class Variant extends Auditable {
     @Column(name = "description", length = 1024)
     private String description;
 
-    @Column(name = "color_hex", length = 8)
+    @Column(name = "color_hex", length = 7)
     private String colorHex;
 
     @Column(name = "sort_order")

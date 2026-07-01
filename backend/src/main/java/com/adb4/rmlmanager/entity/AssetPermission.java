@@ -17,8 +17,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "asset_permissions")
-public class AssetPermission extends Auditable {
+@Table(name = "asset_permissions", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_asset_permission_user_asset", columnNames = {"app_user_id", "asset_id"})
+})
+public class AssetPermission {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, columnDefinition = "uuid")
@@ -36,4 +38,8 @@ public class AssetPermission extends Auditable {
     @CreatedBy
     @Column(name = "granted_by", nullable = false)
     private UUID grantedBy;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }

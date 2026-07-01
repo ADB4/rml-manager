@@ -17,7 +17,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "geometries")
 public class Geometry extends Auditable {
     @Id
