@@ -27,8 +27,12 @@ public class TextureSet extends Auditable {
     @JoinColumn(name = "variant_id", nullable = false)
     private Variant variant;
 
+    @ManyToOne
+    @JoinColumn(name = "lod_id")
+    private Lod lod;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mesh_part_id", nullable = false)
+    @JoinColumn(name = "mesh_part_id")
     private MeshPart meshPart;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -40,6 +44,8 @@ public class TextureSet extends Auditable {
     @Builder.Default
     private Set<TextureMap> textureMaps = new HashSet<>();
 
+    // optional in case we want to have an s3 location for a zip archive
+    // of texture map
     @Column(name = "s3_key")
     private String s3Key;
 

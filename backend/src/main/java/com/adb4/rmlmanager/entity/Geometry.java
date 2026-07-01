@@ -29,7 +29,7 @@ public class Geometry extends Auditable {
     private Lod lod;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mesh_part_id", nullable = false)
+    @JoinColumn(name = "mesh_part_id", nullable = true)
     private MeshPart meshPart;
 
     @Column(name = "file_name", nullable = false, length = 128)

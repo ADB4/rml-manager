@@ -29,4 +29,10 @@ public class MeshPart extends Auditable {
 
     @Column(name = "code", nullable = false, length = 64)
     private String code;
+
+    @Column(name = "shader")
+    private String shader;
+
+    @Column(name = "material")
+    private String material;
 }

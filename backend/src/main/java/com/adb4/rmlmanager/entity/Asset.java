@@ -27,6 +27,9 @@ public class Asset extends Auditable {
     @Column(name = "code", nullable = false, unique = true, length = 32)
     private String code;
 
+    @Column(name = "preview")
+    private String preview;
+
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -36,12 +39,6 @@ public class Asset extends Auditable {
 
     @Column(name = "description")
     private String description;
-
-    @Column(name = "shader")
-    private String shader;
-
-    @Column(name = "material")
-    private String material;
 
     @Column(name = "has_animation")
     private boolean hasAnimation;

@@ -11,7 +11,9 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "categories")
+@Table(name = "categories", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_category_name",  columnNames = {"name"})
+})
 public class Category extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -7,7 +7,6 @@ public enum TextureMapType {
     METALLIC,
     AO,
     DISPLACEMENT,
-    HEIGHT,
     EMISSIVE,
     OPACITY
 }

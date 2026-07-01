@@ -1,5 +1,6 @@
 package com.adb4.rmlmanager.entity;
 
+import com.adb4.rmlmanager.enums.TextureFileType;
 import com.adb4.rmlmanager.enums.TextureMapType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,11 +30,14 @@ public class TextureMap extends Auditable {
     @Builder.Default
     private Set<TextureSet> textureSets = new HashSet<>();
 
-    @Column(name = "type")
+    @Column(name = "type", nullable = false)
     private TextureMapType type;
 
-    @Column(name = "file_name")
+    @Column(name = "file_name", nullable = false)
     private String fileName;
+
+    @Column(name = "file_type", nullable = false)
+    private TextureFileType fileType;
 
     @Column(name = "s3_key")
     private String s3Key;
@@ -53,4 +57,7 @@ public class TextureMap extends Auditable {
     @CreatedBy
     @Column(name = "uploaded_by", nullable = false)
     private UUID uploadedBy;
+
+    @Column(name = "checksum")
+    private String checksum;
 }
