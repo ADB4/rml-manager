@@ -1,0 +1,47 @@
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### VS Code ###
+.vscode/
+
+### Eclipse / STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Windows ###
+Thumbs.db
+Desktop.ini
+
+### Environment / secrets ###
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+### Logs ###
+*.log
+logs/
+
+### Node (frontend) ###
+node_modules/
+dist/
+.cache/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

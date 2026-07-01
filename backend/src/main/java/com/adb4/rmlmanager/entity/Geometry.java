@@ -36,6 +36,7 @@ public class Geometry extends Auditable {
     private String fileName;
 
     @Column(name = "file_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private GeometryFileType fileType;
 
     @Column(name = "s3_key", nullable = false, length = 128)
