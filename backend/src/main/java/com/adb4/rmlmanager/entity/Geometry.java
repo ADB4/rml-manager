@@ -21,6 +21,14 @@ public class Geometry {
     @Column(name = "id", columnDefinition = "uuid",  nullable = false, updatable = false)
     private UUID id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lod_id", nullable = false)
+    private Lod lod;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mesh_part_id", nullable = false)
+    private MeshPart meshPart;
+
     @Column(name = "file_name", nullable = false, length = 255)
     private String fileName;
 

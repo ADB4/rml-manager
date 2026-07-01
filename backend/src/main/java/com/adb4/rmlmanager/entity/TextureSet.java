@@ -22,6 +22,14 @@ public class TextureSet {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "variant_id", nullable = false)
+    private Variant variant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mesh_part_id", nullable = false)
+    private MeshPart meshPart;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "texture_set_maps",
