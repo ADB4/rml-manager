@@ -3,13 +3,9 @@ package com.adb4.rmlmanager.entity;
 import com.adb4.rmlmanager.enums.AssetStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Audited;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -35,6 +31,7 @@ public class Asset extends Auditable {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", nullable = false)
     private Subcategory subcategory;
