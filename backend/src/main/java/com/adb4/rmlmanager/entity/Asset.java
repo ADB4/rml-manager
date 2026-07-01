@@ -30,11 +30,9 @@ public class Asset extends Auditable {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "category", nullable = false)
-    private String category;
-
-    @Column(name = "subcategory", nullable = false)
-    private String subcategory;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subcategory_id", nullable = false)
+    private Subcategory subcategory;
 
     @Column(name = "description")
     private String description;
@@ -57,4 +55,8 @@ public class Asset extends Auditable {
     @CreatedBy
     @Column(name = "created_by", nullable = false, updatable = false)
     private UUID createdBy;
+
+    public Category getCategory() {
+        return subcategory.getCategory();
+    }
 }
