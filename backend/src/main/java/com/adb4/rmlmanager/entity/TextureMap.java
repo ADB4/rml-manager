@@ -12,12 +12,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "texture_maps")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "texture_maps")
 public class TextureMap {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

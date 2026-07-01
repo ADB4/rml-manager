@@ -1,6 +1,7 @@
 package com.adb4.rmlmanager.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -8,6 +9,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "lods", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_lod_asset_level", columnNames = {"asset_id", "level"})
+})
 public class Lod {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -3,8 +3,10 @@ package com.adb4.rmlmanager.entity;
 import com.adb4.rmlmanager.enums.GeometryFileType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,6 +17,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "geometries")
 public class Geometry {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,16 +33,16 @@ public class Geometry {
     @JoinColumn(name = "mesh_part_id", nullable = false)
     private MeshPart meshPart;
 
-    @Column(name = "file_name", nullable = false, length = 255)
+    @Column(name = "file_name", nullable = false, length = 128)
     private String fileName;
 
     @Column(name = "file_type", nullable = false)
     private GeometryFileType fileType;
 
-    @Column(name = "s3_key", nullable = false)
+    @Column(name = "s3_key", nullable = false, length = 128)
     private String s3Key;
 
-    @Column(name = "s3_bucket", nullable = false)
+    @Column(name = "s3_bucket", nullable = false, length = 128)
     private String s3Bucket;
 
     @Column(name = "file_size", nullable = false)
@@ -73,6 +77,10 @@ public class Geometry {
 
     @Column(name = "checksum")
     private String checksum;
+
+    @CreatedBy
+    @Column(name = "uploaded_by", nullable = false)
+    private UUID uploadedBy;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)

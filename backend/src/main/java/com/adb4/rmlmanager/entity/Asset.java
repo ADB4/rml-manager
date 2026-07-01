@@ -1,5 +1,6 @@
 package com.adb4.rmlmanager.entity;
 
+import com.adb4.rmlmanager.enums.AssetStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -17,13 +18,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "assets")
 public class Asset {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", columnDefinition = "uuid", nullable = false, updatable = false)
     private UUID id;
 
-    @Column(name = "code", nullable = false)
+    @Column(name = "code", nullable = false, unique = true, length = 32)
     private String code;
 
     @Column(name = "title", nullable = false)
@@ -48,7 +50,7 @@ public class Asset {
     private boolean hasAnimation;
 
     @Column(name = "status")
-    private String status;
+    private AssetStatus status;
 
     @Column(name = "version")
     private Integer version;

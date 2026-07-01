@@ -16,6 +16,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "texture_sets")
 public class TextureSet {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

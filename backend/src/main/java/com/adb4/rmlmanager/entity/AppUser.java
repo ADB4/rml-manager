@@ -15,19 +15,20 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "app_users")
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "uuid", name = "id",  updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "user_name", nullable = false, length = 32)
-    private String userName;
+    @Column(name = "username", nullable = false, length = 32, unique = true)
+    private String username;
 
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
-    @Column(name = "role")
+    @Column(name = "role", nullable = false, length = 32)
     private UserRole role;
 
     @CreatedDate

@@ -14,6 +14,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "variants", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_variant_asset_code", columnNames = {"asset_id", "code"})
+})
 public class Variant {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,16 +27,16 @@ public class Variant {
     @JoinColumn(name = "asset_id", nullable = false)
     private Asset asset;
 
-    @Column(name = "code", nullable = false)
+    @Column(name = "code", nullable = false, length = 32)
     private String code;
 
     @Column(name = "display_name", nullable = false)
     private String displayName;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 1024)
     private String description;
 
-    @Column(name = "color_hex")
+    @Column(name = "color_hex", length = 8)
     private String colorHex;
 
     @Column(name = "sort_order")

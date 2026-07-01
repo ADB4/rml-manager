@@ -11,6 +11,9 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "mesh_parts", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_mesh_parts_asset_code", columnNames = {"asset_id", "code"})
+})
 public class MeshPart {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
