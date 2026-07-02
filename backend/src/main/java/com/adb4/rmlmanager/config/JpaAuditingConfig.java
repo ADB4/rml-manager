@@ -1,14 +1,16 @@
 package com.adb4.rmlmanager.config;
 
+import com.adb4.rmlmanager.security.AppUserPrincipal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 
 import java.util.Optional;
 import java.util.UUID;
+
 @Configuration
 public class JpaAuditingConfig {
     @Bean
@@ -16,8 +18,9 @@ public class JpaAuditingConfig {
         return () -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(Authentication::isAuthenticated)
                 .filter(auth -> !(auth instanceof AnonymousAuthenticationToken))
-                .map(auth -> {
-                    return UUID.fromString(auth.getName());
-                });
+                .map(Authentication::getPrincipal)
+                .filter(AppUserPrincipal.class::isInstance)
+                .map(AppUserPrincipal.class::cast)
+                .map(AppUserPrincipal::getId);
     }
 }

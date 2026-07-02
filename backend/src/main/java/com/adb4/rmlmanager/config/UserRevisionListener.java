@@ -1,12 +1,11 @@
 package com.adb4.rmlmanager.config;
 
 import com.adb4.rmlmanager.entity.UserRevision;
+import com.adb4.rmlmanager.security.AppUserPrincipal;
 import org.hibernate.envers.RevisionListener;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.UUID;
 
 public class UserRevisionListener implements RevisionListener {
     @Override
@@ -14,8 +13,9 @@ public class UserRevisionListener implements RevisionListener {
         UserRevision revision = (UserRevision) revisionEntity;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated()
-            && !(auth instanceof AnonymousAuthenticationToken)) {
-            revision.setUserId(UUID.fromString(auth.getName()));
+                && !(auth instanceof AnonymousAuthenticationToken)
+                && auth.getPrincipal() instanceof AppUserPrincipal principal) {
+            revision.setUserId(principal.getId());
         }
     }
 }
