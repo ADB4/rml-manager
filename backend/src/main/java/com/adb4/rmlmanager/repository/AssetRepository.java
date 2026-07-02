@@ -25,21 +25,20 @@ public interface AssetRepository extends JpaRepository<Asset, UUID> {
     Page<Asset> findByTitleContainingIgnoreCase(String query, Pageable pageable);
 
     @Query(value = """
-    SELECT a FROM Asset a JOIN FETCH a.subcategory s JOIN FETCH s.category
-    WHERE a.status = 'PUBLISHED'
-       OR a.createdBy = :userId
-       OR EXISTS (SELECT 1 FROM AssetPermission p
-                  WHERE p.assetId = a.id AND p.appUserId = :userId)
-    """,
+            SELECT a FROM Asset a JOIN FETCH a.subcategory s JOIN FETCH s.category
+            WHERE a.status = 'PUBLISHED'
+               OR a.createdBy = :userId
+               OR EXISTS (SELECT 1 FROM AssetPermission p
+                          WHERE p.assetId = a.id AND p.appUserId = :userId)
+            """,
             countQuery = """
-    SELECT COUNT(a) FROM Asset a
-    WHERE a.status = 'PUBLISHED'
-       OR a.createdBy = :userId
-       OR EXISTS (SELECT 1 FROM AssetPermission p
-                  WHERE p.assetId = a.id AND p.appUserId = :userId)
-    """)
+            SELECT COUNT(a) FROM Asset a
+            WHERE a.status = 'PUBLISHED'
+               OR a.createdBy = :userId
+               OR EXISTS (SELECT 1 FROM AssetPermission p
+                          WHERE p.assetId = a.id AND p.appUserId = :userId)
+            """)
     Page<Asset> findAllVisibleTo(@Param("userId") UUID userId, Pageable pageable);
 
-    // delete guards
     boolean existsBySubcategoryId(UUID subcategoryId);
 }
