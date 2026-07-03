@@ -5,9 +5,7 @@ import com.adb4.rmlmanager.dto.request.UpdateAssetRequest;
 import com.adb4.rmlmanager.dto.response.AssetSummaryResponse;
 import com.adb4.rmlmanager.entity.Asset;
 import com.adb4.rmlmanager.entity.Subcategory;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface AssetMapper {
@@ -16,6 +14,7 @@ public interface AssetMapper {
     @Mapping(source = "subcategory.name", target = "subcategoryName")
     AssetSummaryResponse toSummaryResponse(Asset asset);
 
+    @BeanMapping(builder = @Builder(disableBuilder = true))
     @Mapping(source = "request.code", target = "code")
     @Mapping(source = "request.title", target = "title")
     @Mapping(source = "request.description", target = "description")
