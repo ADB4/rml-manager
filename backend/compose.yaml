@@ -2,8 +2,37 @@ services:
   postgres:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=rmlmanager'
-      - 'POSTGRES_PASSWORD=rmlmanager'
-      - 'POSTGRES_USER=rmlmanager'
+      - 'POSTGRES_DB=mydatabase'
+      - 'POSTGRES_PASSWORD=secret'
+      - 'POSTGRES_USER=myuser'
     ports:
-      - '5432:5432'
+      - '5432'
+
+  minio:
+    image: 'minio/minio:latest'
+    environment:
+      - 'MINIO_ROOT_USER=minioadmin'
+      - 'MINIO_ROOT_PASSWORD=minioadmin'
+    command: server /data --console-address ":9001"
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - minio-data:/data
+
+  minio-init:
+    image: 'minio/mc:latest'
+    depends_on:
+      - minio
+    entrypoint: /bin/sh -c
+    command:
+      - |
+        until mc alias set local http://minio:9000 minioadmin minioadmin; do
+          echo "Waiting for MinIO..."
+          sleep 1
+        done
+        mc mb --ignore-existing local/rml-assets
+        echo "Bucket rml-assets ready."
+
+volumes:
+  minio-data:
