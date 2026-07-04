@@ -5,6 +5,8 @@ import com.adb4.rmlmanager.dto.request.UpdateAssetRequest;
 import com.adb4.rmlmanager.dto.response.AssetSummaryResponse;
 import com.adb4.rmlmanager.entity.Asset;
 import com.adb4.rmlmanager.entity.Subcategory;
+import com.adb4.rmlmanager.exception.DuplicateResourceException;
+import com.adb4.rmlmanager.exception.ResourceNotFoundException;
 import com.adb4.rmlmanager.mapper.AssetMapper;
 import com.adb4.rmlmanager.repository.AssetRepository;
 import com.adb4.rmlmanager.repository.SubcategoryRepository;
@@ -38,14 +40,14 @@ public class AssetService {
 
     public AssetSummaryResponse findByCode(String code) {
         Asset asset = assetRepository.findByCode(code)
-                .orElseThrow(() -> new IllegalArgumentException("Asset not found: " + code));
+                .orElseThrow(() -> new ResourceNotFoundException("Asset", "code", code));
         return assetMapper.toSummaryResponse(asset);
     }
 
     @Transactional
     public AssetSummaryResponse create(CreateAssetRequest request) {
         if (assetRepository.existsByCode(request.code())) {
-            throw new IllegalArgumentException("Asset code already exists: " + request.code());
+            throw new DuplicateResourceException("Asset", "code", request.code());
         }
         Subcategory subcategory = resolveSubcategory(request.subcategoryId());
         Asset asset = assetMapper.toEntity(request, subcategory);
@@ -55,7 +57,7 @@ public class AssetService {
     @Transactional
     public AssetSummaryResponse update(UUID assetId, UpdateAssetRequest request) {
         Asset asset = assetRepository.findById(assetId)
-                .orElseThrow(() -> new IllegalArgumentException("Asset not found: " + assetId));
+                .orElseThrow(() -> new ResourceNotFoundException("Asset", "id", assetId));
         Subcategory subcategory = resolveSubcategory(request.subcategoryId());
         assetMapper.updateEntity(request, subcategory, asset);
         return assetMapper.toSummaryResponse(assetRepository.save(asset));
@@ -63,6 +65,6 @@ public class AssetService {
 
     private Subcategory resolveSubcategory(UUID subcategoryId) {
         return subcategoryRepository.findById(subcategoryId)
-                .orElseThrow(() -> new IllegalArgumentException("Subcategory not found: " + subcategoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Subcategory", "id", subcategoryId));
     }
 }
