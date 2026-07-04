@@ -1,9 +1,5 @@
 package com.adb4.rmlmanager.security;
 
-import com.adb4.rmlmanager.entity.AppUser;
-import com.adb4.rmlmanager.enums.UserRole;
-import com.adb4.rmlmanager.repository.AppUserRepository;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -36,20 +32,5 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
-    @Bean
-    public CommandLineRunner seedAdminUser(AppUserRepository appUserRepository,
-                                           PasswordEncoder passwordEncoder) {
-        return args -> {
-            if (appUserRepository.findByUsername("admin").isEmpty()) {
-                AppUser admin = AppUser.builder()
-                        .username("admin")
-                        .password(passwordEncoder.encode("admin"))
-                        .role(UserRole.ADMIN)
-                        .build();
-                appUserRepository.save(admin);
-            }
-        };
     }
 }
