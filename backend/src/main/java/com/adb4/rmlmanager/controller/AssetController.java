@@ -9,10 +9,12 @@ import com.adb4.rmlmanager.service.AssetService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -43,9 +45,14 @@ public class AssetController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public AssetSummaryResponse create(@Valid @RequestBody CreateAssetRequest request) {
-        return assetService.create(request);
+    public ResponseEntity<AssetSummaryResponse> create(
+            @Valid @RequestBody CreateAssetRequest request,
+            UriComponentsBuilder ucb) {
+        AssetSummaryResponse response = assetService.create(request);
+        URI location = ucb.path("/api/assets/{code}")
+                .buildAndExpand(response.code())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     @PutMapping("/{id}")
