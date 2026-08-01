@@ -3,6 +3,7 @@ package com.adb4.rmlmanager.controller;
 import com.adb4.rmlmanager.dto.request.CreateAssetRequest;
 import com.adb4.rmlmanager.dto.request.UpdateAssetRequest;
 import com.adb4.rmlmanager.dto.response.AssetSummaryResponse;
+import com.adb4.rmlmanager.enums.AssetStatus;
 import com.adb4.rmlmanager.security.AppUserPrincipal;
 import com.adb4.rmlmanager.service.AssetService;
 import jakarta.validation.Valid;
@@ -25,9 +26,15 @@ public class AssetController {
     }
 
     @GetMapping
-    public Page<AssetSummaryResponse> findAll(@AuthenticationPrincipal AppUserPrincipal principal,
-                                              Pageable pageable) {
-        return assetService.findAllVisible(principal.getId(), pageable);
+    public Page<AssetSummaryResponse> findAll(
+            @AuthenticationPrincipal AppUserPrincipal principal,
+            @RequestParam(required = false) UUID categoryId,
+            @RequestParam(required = false) UUID subcategoryId,
+            @RequestParam(required = false) AssetStatus status,
+            @RequestParam(required = false) String q,
+            Pageable pageable) {
+        return assetService.findAllVisible(
+                principal.getId(), categoryId, subcategoryId, status, q, pageable);
     }
 
     @GetMapping("/{code}")

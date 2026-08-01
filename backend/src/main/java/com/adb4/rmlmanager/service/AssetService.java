@@ -5,13 +5,16 @@ import com.adb4.rmlmanager.dto.request.UpdateAssetRequest;
 import com.adb4.rmlmanager.dto.response.AssetSummaryResponse;
 import com.adb4.rmlmanager.entity.Asset;
 import com.adb4.rmlmanager.entity.Subcategory;
+import com.adb4.rmlmanager.enums.AssetStatus;
 import com.adb4.rmlmanager.exception.DuplicateResourceException;
 import com.adb4.rmlmanager.exception.ResourceNotFoundException;
 import com.adb4.rmlmanager.mapper.AssetMapper;
 import com.adb4.rmlmanager.repository.AssetRepository;
+import com.adb4.rmlmanager.repository.AssetSpecification;
 import com.adb4.rmlmanager.repository.SubcategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +36,37 @@ public class AssetService {
         this.assetMapper = assetMapper;
     }
 
-    public Page<AssetSummaryResponse> findAllVisible(UUID userId, Pageable pageable) {
-        return assetRepository.findAllVisibleTo(userId, pageable)
+    /**
+     * Returns a page of assets visible to the given user, optionally narrowed
+     * by category, subcategory, status, and title search.
+     *
+     * <p>Visibility is always enforced: the filters can only narrow the result
+     * set, never widen it beyond what {@code findAllVisibleTo} would return.
+     */
+    public Page<AssetSummaryResponse> findAllVisible(UUID userId,
+                                                     UUID categoryId,
+                                                     UUID subcategoryId,
+                                                     AssetStatus status,
+                                                     String q,
+                                                     Pageable pageable) {
+        Specification<Asset> spec = Specification
+                .where(AssetSpecification.fetchSubcategoryAndCategory())
+                .and(AssetSpecification.visibleTo(userId));
+
+        if (categoryId != null) {
+            spec = spec.and(AssetSpecification.inCategory(categoryId));
+        }
+        if (subcategoryId != null) {
+            spec = spec.and(AssetSpecification.inSubcategory(subcategoryId));
+        }
+        if (status != null) {
+            spec = spec.and(AssetSpecification.withStatus(status));
+        }
+        if (q != null && !q.isBlank()) {
+            spec = spec.and(AssetSpecification.titleContains(q.strip()));
+        }
+
+        return assetRepository.findAll(spec, pageable)
                 .map(assetMapper::toSummaryResponse);
     }
 
