@@ -12,12 +12,14 @@ import com.adb4.rmlmanager.service.AssetService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(AssetController.class)
 @AutoConfigureRestDocs
+@Import(com.adb4.rmlmanager.security.SecurityConfig.class)  // real chain: CSRF disabled, HTTP Basic entry point
 class AssetControllerTest {
 
     @Autowired
@@ -225,7 +228,8 @@ class AssetControllerTest {
                                 fieldWithPath("code").description("Unique asset code"),
                                 fieldWithPath("title").description("Asset title"),
                                 fieldWithPath("status").description("Asset status (DRAFT or PUBLISHED)"),
-                                fieldWithPath("preview").description("Preview image URL").optional(),
+                                fieldWithPath("preview").type(JsonFieldType.STRING).optional()
+                                        .description("Preview image URL"),
                                 fieldWithPath("categoryName").description("Parent category name"),
                                 fieldWithPath("subcategoryName").description("Subcategory name"),
                                 fieldWithPath("hasAnimation").description("Whether the asset contains animation"),
@@ -283,7 +287,9 @@ class AssetControllerTest {
                                 fieldWithPath("code").description("Unique asset code (max 32 characters)"),
                                 fieldWithPath("title").description("Asset title"),
                                 fieldWithPath("subcategoryId").description("Subcategory identifier"),
-                                fieldWithPath("description").description("Optional asset description").optional(),
+                                // absent from this payload, so the type cannot be inferred
+                                fieldWithPath("description").type(JsonFieldType.STRING).optional()
+                                        .description("Optional asset description"),
                                 fieldWithPath("hasAnimation").description("Whether the asset contains animation")
                         ),
                         responseFields(
@@ -291,7 +297,8 @@ class AssetControllerTest {
                                 fieldWithPath("code").description("Unique asset code"),
                                 fieldWithPath("title").description("Asset title"),
                                 fieldWithPath("status").description("Asset status (defaults to DRAFT)"),
-                                fieldWithPath("preview").description("Preview image URL").optional(),
+                                fieldWithPath("preview").type(JsonFieldType.STRING).optional()
+                                        .description("Preview image URL"),
                                 fieldWithPath("categoryName").description("Parent category name"),
                                 fieldWithPath("subcategoryName").description("Subcategory name"),
                                 fieldWithPath("hasAnimation").description("Whether the asset contains animation"),
@@ -442,7 +449,8 @@ class AssetControllerTest {
                         requestFields(
                                 fieldWithPath("title").description("Asset title"),
                                 fieldWithPath("subcategoryId").description("Subcategory identifier"),
-                                fieldWithPath("description").description("Optional asset description").optional(),
+                                fieldWithPath("description").type(JsonFieldType.STRING).optional()
+                                        .description("Optional asset description"),
                                 fieldWithPath("hasAnimation").description("Whether the asset contains animation"),
                                 fieldWithPath("status").description("Asset status (DRAFT or PUBLISHED)")
                         ),
@@ -451,7 +459,8 @@ class AssetControllerTest {
                                 fieldWithPath("code").description("Unique asset code"),
                                 fieldWithPath("title").description("Asset title"),
                                 fieldWithPath("status").description("Asset status"),
-                                fieldWithPath("preview").description("Preview image URL").optional(),
+                                fieldWithPath("preview").type(JsonFieldType.STRING).optional()
+                                        .description("Preview image URL"),
                                 fieldWithPath("categoryName").description("Parent category name"),
                                 fieldWithPath("subcategoryName").description("Subcategory name"),
                                 fieldWithPath("hasAnimation").description("Whether the asset contains animation"),
