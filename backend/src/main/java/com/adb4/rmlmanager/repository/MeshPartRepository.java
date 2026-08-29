@@ -3,16 +3,19 @@ package com.adb4.rmlmanager.repository;
 import com.adb4.rmlmanager.entity.MeshPart;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
  * Repository for {@link MeshPart}.
  *
- * <p>Introduced here because geometry upload must resolve an optional
- * {@code meshPartId} to attach the row to a mesh part. KAN-18 (LOD and mesh
- * part management endpoints) also calls for this repository; this is the
- * minimal declaration both stories share. When KAN-18 lands it can add its
- * own finders (for example {@code existsByAssetIdAndCode}) on top of this.
+ * <p>Introduced because geometry upload must resolve an optional
+ * {@code meshPartId} to attach the row to a mesh part. The finders support
+ * the mesh part management endpoints (KAN-18) nested under an asset.
  */
 public interface MeshPartRepository extends JpaRepository<MeshPart, UUID> {
+
+    List<MeshPart> findByAssetIdOrderByCodeAsc(UUID assetId);
+
+    boolean existsByAssetIdAndCode(UUID assetId, String code);
 }

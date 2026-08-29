@@ -20,4 +20,8 @@ public interface GeometryRepository extends JpaRepository<Geometry, UUID> {
     int findMaxVersionBaked(@Param("lodId") UUID lodId, @Param("type") GeometryFileType type);
 
     List<Geometry> findByLodIdOrderByVersionDesc(UUID lodId);  // version history view
+
+    boolean existsByLodId(UUID lodId);
+
+    boolean existsByMeshPartId(UUID meshPartId);
 }
