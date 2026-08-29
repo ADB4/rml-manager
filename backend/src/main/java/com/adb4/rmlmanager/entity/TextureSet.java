@@ -35,12 +35,14 @@ public class TextureSet extends Auditable {
     @JoinColumn(name = "mesh_part_id")
     private MeshPart meshPart;
 
+    // ordered so API responses list a set's maps deterministically
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "texture_set_maps",
             joinColumns = @JoinColumn(name = "texture_set_id"),
             inverseJoinColumns = @JoinColumn(name = "texture_map_id")
     )
+    @OrderBy("type ASC, fileName ASC")
     @Builder.Default
     private Set<TextureMap> textureMaps = new HashSet<>();
 

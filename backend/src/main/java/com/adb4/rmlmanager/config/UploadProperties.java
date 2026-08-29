@@ -24,4 +24,11 @@ public class UploadProperties {
      * is the servlet-container backstop.
      */
     private DataSize maxGeometrySize = DataSize.ofMegabytes(512);
+
+    /**
+     * Maximum accepted size for a single texture map file, enforced the same way
+     * as {@code maxGeometrySize}. Must stay well below 2GB because
+     * {@code texture_maps.file_size} is a 32-bit INTEGER column.
+     */
+    private DataSize maxTextureSize = DataSize.ofMegabytes(64);
 }
