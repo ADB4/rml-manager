@@ -42,4 +42,11 @@ public interface StorageService {
      * does not raise error if object does not exist
      */
     void delete(String key);
+
+    /**
+     * Name of the bucket this service writes to. Persisted onto entities (for
+     * example {@code Geometry.s3Bucket}) so a row records where its object
+     * lives, without the domain layer reaching into S3-specific configuration.
+     */
+    String bucket();
 }

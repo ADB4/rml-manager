@@ -15,8 +15,10 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.net.URI;
 
+// Storage configuration hub: registers both the S3 client properties and the
+// upload-limit properties (storage.upload.*) consumed by GeometryService.
 @Configuration
-@EnableConfigurationProperties(S3Properties.class)
+@EnableConfigurationProperties({S3Properties.class, UploadProperties.class})
 public class S3ClientConfig {
 
     @Bean

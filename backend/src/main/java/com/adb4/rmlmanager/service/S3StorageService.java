@@ -3,7 +3,6 @@ package com.adb4.rmlmanager.service;
 import com.adb4.rmlmanager.config.S3Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -89,5 +88,10 @@ public class S3StorageService implements StorageService {
                 .build();
         s3Client.deleteObject(deleteObjectRequest);
         log.debug("Deleted object from S3: bucket={}, key={}", properties.getBucket(), key);
+    }
+
+    @Override
+    public String bucket() {
+        return properties.getBucket();
     }
 }

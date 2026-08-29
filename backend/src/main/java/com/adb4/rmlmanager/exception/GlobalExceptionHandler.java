@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.net.URI;
@@ -47,6 +48,53 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problem.setTitle("Resource In Use");
         problem.setType(BLANK_TYPE);
         return problem;
+    }
+
+    /**
+     * Bad geometry upload: unknown/mismatched extension, missing filename, etc.
+     */
+    @ExceptionHandler(InvalidUploadException.class)
+    public ProblemDetail handleInvalidUpload(InvalidUploadException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problem.setTitle("Bad Request");
+        problem.setType(BLANK_TYPE);
+        return problem;
+    }
+
+    /**
+     * Application-level size check (declared size over {@code storage.upload.max-geometry-size}).
+     */
+    @ExceptionHandler(PayloadTooLargeException.class)
+    public ProblemDetail handlePayloadTooLarge(PayloadTooLargeException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONTENT_TOO_LARGE, ex.getMessage());
+        problem.setTitle("Payload Too Large");
+        problem.setType(BLANK_TYPE);
+        return problem;
+    }
+
+    /**
+     * Servlet-container backstop: multipart request exceeded
+     * {@code spring.servlet.multipart.max-file-size} / {@code max-request-size}
+     * before the application size check could run. Same 413 contract.
+     * Implemented by overriding the base-class hook rather than declaring a new
+     * {@code @ExceptionHandler}, because {@link ResponseEntityExceptionHandler}
+     * already maps this exception and a duplicate mapping would be ambiguous.
+     */
+    @Override
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(
+            MaxUploadSizeExceededException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONTENT_TOO_LARGE, "Uploaded file exceeds the maximum permitted size");
+        problem.setTitle("Payload Too Large");
+        problem.setType(BLANK_TYPE);
+
+        return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE)
+                .headers(headers)
+                .body(problem);
     }
 
     @Override
